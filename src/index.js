@@ -3,12 +3,16 @@
 import "./styles.css";
 
 import { homePageController } from './home.js';
+import { appController } from './logic/appController.js';
 
 
 const navBarController = ( () => {
     let homeBtn;
     let applicationBtn;
     let contentDiv;
+
+    window.appController = appController;
+    appController.init();
 
     const cacheDOM = () => {
         homeBtn = document.getElementById('home-btn');
