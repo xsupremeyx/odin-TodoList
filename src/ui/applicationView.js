@@ -4,6 +4,7 @@ const applicationView = ( () => {
     let contentDiv;
 
     const init = (parentDiv) => {
+        appController.subscribe(render);
         contentDiv = parentDiv;
         render();
     };
@@ -42,7 +43,6 @@ const applicationView = ( () => {
                 return;
             }
             appController.setActiveProject(name);
-            render();
         });
         sidebar.appendChild(addBtn);
 
@@ -56,10 +56,13 @@ const applicationView = ( () => {
             item.classList.add('project-item');
             item.textContent = project.name;
 
+            if(project === appController.getActiveProject()){
+                item.classList.add('active');
+            }
+
             // Click event to set active project
             item.addEventListener('click',() => {
                 appController.setActiveProject(project.name);
-                render();
             });
             projectList.appendChild(item);
         });

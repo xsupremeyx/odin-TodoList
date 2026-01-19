@@ -4,6 +4,7 @@ import { Todo } from "./todoFactory";
 const appController = (() => {
     let projects = [];
     let activeProject = null;
+    let subscribers = [];
 
     // Init
     const init = () => {
@@ -11,12 +12,17 @@ const appController = (() => {
         setActiveProject("Default");
     }
 
+    const subscribe = (fn) => {
+        subscribers.push(fn);
+    };
+
     // Project methods
 
     const createProject = (name) => {
         if(projects.some(p => p.name === name)) return false; //duplicate project check!
         const project = Project(name);
         projects.push(project);
+        subscribers.forEach(fn => fn());
         return project;
     };
     const deleteProject = (name) => {
@@ -40,8 +46,9 @@ const appController = (() => {
                 activeProject = null; // no projects left
             }
         }
+        subscribers.forEach(fn => fn());
     };
-    
+
     const getProject = (name) => {
         return projects.find(p => p.name === name) || null;
     };
@@ -54,6 +61,7 @@ const appController = (() => {
     const setActiveProject = (name) => {
         const project = getProject(name);
         if(project) activeProject = project;
+        subscribers.forEach(fn => fn());
     };
     const getActiveProject = () => activeProject;
 
@@ -70,17 +78,22 @@ const appController = (() => {
         );
 
         activeProject.todos.push(todo);
+        subscribers.forEach(fn => fn());
+
         return todo;
     };
     const deleteTodo = (todoId) => {
         if(!activeProject) return;
 
         activeProject.todos = activeProject.todos.filter(todo => todo.id !== todoId);
+        subscribers.forEach(fn => fn());
+
     };
     const toggleTodoCompleted = (todoId) => {
         if(!activeProject) return;
         const todo = activeProject.todos.find(todo => todo.id === todoId);
         if(todo) todo.completed = !todo.completed;
+        subscribers.forEach(fn => fn());
     };
 
     
@@ -96,6 +109,7 @@ const appController = (() => {
         toggleTodoCompleted,
         setActiveProject,
         getActiveProject,
+        subscribe
     };
 })();
 

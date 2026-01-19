@@ -176,3 +176,10 @@ footer{
 #home-page .card button:active {
     transform: scale(0.97);
 }
+
+/* Application page */
+
+.sidebar .project-item.active {
+    font-weight: bold;
+    background: var(--color-surface);
+}
