@@ -21,6 +21,36 @@ const applicationView = ( () => {
     const renderSidebar = () => {
         const sidebar = document.createElement('div');
         sidebar.classList.add('sidebar');
+
+        // header
+        const header = document.createElement('h3');
+        header.textContent = 'Projects';
+        sidebar.appendChild(header);
+
+        //  Add Button
+        const addBtn = document.createElement('button');
+        addBtn.textContent = '+ Add Project';
+        addBtn.classList.add('add-project-btn');
+        sidebar.appendChild(addBtn);
+
+        // Project List
+        const projectList = document.createElement('div');
+        projectList.classList.add('project-list');
+
+        const projects = appController.listProjects();
+        projects.forEach(project => {
+            const item = document.createElement('div');
+            item.classList.add('project-item');
+            item.textContent = project.name;
+
+            // Click event to set active project
+            item.addEventListener('click',() => {
+                appController.setActiveProject(project.name);
+                render();
+            });
+            projectList.appendChild(item);
+        });
+        sidebar.appendChild(projectList);
         return sidebar;
     };
 
