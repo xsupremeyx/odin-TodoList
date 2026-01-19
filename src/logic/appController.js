@@ -37,9 +37,8 @@ const appController = (() => {
 
     // Todo methods
 
-    const addTodo = (projectName, todoData) => {
-        const project = getProject(projectName);
-        if(!project) return null;
+    const addTodo = (todoData) => {
+        if(!activeProject) return null;
 
         const todo = Todo(
             todoData.title,
@@ -48,7 +47,7 @@ const appController = (() => {
             todoData.priority
         );
 
-        project.todos.push(todo);
+        activeProject.todos.push(todo);
         return todo;
     };
     const deleteTodo = (projectName, todoId) => {};
