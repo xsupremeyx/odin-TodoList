@@ -31,6 +31,19 @@ const applicationView = ( () => {
         const addBtn = document.createElement('button');
         addBtn.textContent = '+ Add Project';
         addBtn.classList.add('add-project-btn');
+        addBtn.addEventListener('click', () => {
+            const name = prompt("Enter project name: ");
+
+            if(!name) return;
+
+            const created = appController.createProject(name);
+            if(!created){
+                alert("project already exists!");
+                return;
+            }
+            appController.setActiveProject(name);
+            render();
+        });
         sidebar.appendChild(addBtn);
 
         // Project List

@@ -13,6 +13,7 @@ const navBarController = ( () => {
     let contentDiv;
 
     window.appController = appController;
+    window.applicationView = applicationView;
     appController.init();
 
     const cacheDOM = () => {
