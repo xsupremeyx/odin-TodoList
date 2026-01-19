@@ -32,6 +32,8 @@ const homePageController = ( () => {
         // Placeholder for future event bindings
         goToButton.addEventListener('click', () => {
             console.log('Start Now button clicked');
+            const event = new CustomEvent("navigateToApplication");
+            window.dispatchEvent(event);
         });
     }
 

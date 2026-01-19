@@ -4,6 +4,7 @@ import "./styles.css";
 
 import { homePageController } from './home.js';
 import { appController } from './logic/appController.js';
+import { applicationView } from "./ui/applicationView.js";
 
 
 const navBarController = ( () => {
@@ -22,12 +23,11 @@ const navBarController = ( () => {
 
     const renderHomePage = () => {
         homePageController.init(contentDiv);
-        console.log('Home Page Rendered');
     }
 
     const renderApplicationPage = () => {
         // Placeholder for application page rendering logic
-        console.log('Application Page Rendered');
+        applicationView.init(contentDiv);
     }
 
     const bindEvents = () => {
@@ -41,7 +41,8 @@ const navBarController = ( () => {
         renderHomePage(); // default page
     }
 
-    return { init, renderHomePage}
+    return { init, renderHomePage, renderApplicationPage}
 })();
 
 navBarController.init();
+window.addEventListener("navigateToApplication", navBarController.renderApplicationPage);
