@@ -37,7 +37,20 @@ const appController = (() => {
 
     // Todo methods
 
-    const addTodo = (projectName, todoData) => {};
+    const addTodo = (projectName, todoData) => {
+        const project = getProject(projectName);
+        if(!project) return null;
+
+        const todo = Todo(
+            todoData.title,
+            todoData.description,
+            todoData.dueDate,
+            todoData.priority
+        );
+
+        project.todos.push(todo);
+        return todo;
+    };
     const deleteTodo = (projectName, todoId) => {};
     const toggleTodoCompleted = (projectName, todoId) => {};
 
