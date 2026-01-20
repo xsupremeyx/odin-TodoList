@@ -168,6 +168,14 @@ const applicationView = ( () => {
         details.classList.add('todo-details');
         details.textContent = todo.description || "";
 
+        const delBtn = document.createElement('button');
+        delBtn.textContent = "🗑";
+        delBtn.classList.add('todo-delete-btn');
+        delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            appController.deleteTodo(todo.id);
+        });
+        row.appendChild(delBtn);
         card.appendChild(row);
         card.appendChild(details);
 

@@ -286,3 +286,15 @@ footer{
     cursor: pointer;
     margin-bottom: var(--space-md);
 }
+
+.todo-delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: var(--space-sm);
+    font-size: 16px;
+}
+
+.todo-delete-btn:hover {
+    opacity: 0.7;
+}
