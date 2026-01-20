@@ -78,11 +78,22 @@ const applicationView = ( () => {
 
         const todos = appController.getSortedTodos();
 
+        // header for active project
         const active = appController.getActiveProject();
         if(active){
             const title = document.createElement('h2');
             title.textContent = active.name;
             main.appendChild(title);
+
+            // Add Todo Button
+            const addBtn = document.createElement('button');
+            addBtn.textContent = '+ Add Todo';
+            addBtn.classList.add('add-todo-btn');
+
+            addBtn.addEventListener('click', () => {
+                addTodoPromptFlow();
+            });
+            main.appendChild(addBtn);
         }
 
         if(todos.length === 0){
@@ -161,6 +172,24 @@ const applicationView = ( () => {
         card.appendChild(details);
 
         return card;
+    }
+
+    const addTodoPromptFlow = () => {
+        const title = prompt("Todo title: ");
+        if(!title) return;
+
+        const priority = prompt("Priority (High, Medium, Low): ", "Medium");
+        if(!priority) return;
+
+        const dueDate = prompt("Due Date (YYYY-MM-DD):");
+        if(!dueDate) return;
+
+        appController.addTodo({
+            title,
+            description: "",
+            dueDate,
+            priority
+        });
     }
 
     return {init, render };
