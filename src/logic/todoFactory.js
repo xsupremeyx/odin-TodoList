@@ -1,5 +1,4 @@
-function Todo(title, description, dueDate, priority) {
-    const id = crypto.randomUUID();
+function Todo(title, description, dueDate, priority, completed = false, id = crypto.randomUUID()) {
 
     return {
         id,
@@ -7,7 +6,7 @@ function Todo(title, description, dueDate, priority) {
         description,
         dueDate,
         priority,
-        completed: false,
+        completed
     };
 }
 

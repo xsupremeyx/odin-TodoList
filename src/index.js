@@ -14,6 +14,11 @@ const navBarController = ( () => {
 
     window.appController = appController;
     window.applicationView = applicationView;
+    window.clearTaskPilotStorage = () => {
+        localStorage.removeItem("taskPilotData");
+        location.reload();
+    };
+
     appController.init();
 
     const cacheDOM = () => {

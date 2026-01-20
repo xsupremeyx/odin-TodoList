@@ -5,12 +5,18 @@ const appController = (() => {
     let projects = [];
     let activeProject = null;
     let subscribers = [];
+    const STORAGE_KEY = "taskPilotData";
 
     // Init
     const init = () => {
-        createProject("Default");
-        setActiveProject("Default");
-    }
+        subscribe(saveToStorage);
+
+        const loaded = loadFromStorage();
+        if(!loaded){
+            createProject("Default");
+            setActiveProject("Default");
+        }
+    };
 
     const subscribe = (fn) => {
         subscribers.push(fn);
@@ -111,6 +117,62 @@ const appController = (() => {
             const dB = new Date(b.dueDate);
             return dA - dB; 
         });
+    };
+
+    const saveToStorage = () => {
+        const data = {
+            projects: projects.map( p => ({
+                name: p.name,
+                todos: p.todos.map( t => ({
+                    id: t.id,
+                    title: t.title,
+                    description: t.description,
+                    dueDate: t.dueDate,
+                    priority: t.priority,
+                    completed: t.completed
+                }))
+            })),
+            activeProject: activeProject ? activeProject.name : null
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    };
+
+    const loadFromStorage = () => {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+
+        try {
+            const data = JSON.parse(raw);
+            projects = [];
+            data.projects.forEach( p => {
+                const project = Project(p.name);
+                p.todos.forEach( t => {
+                    const todo = Todo(
+                        t.title,
+                        t.description,
+                        t.dueDate,
+                        t.priority,
+                        t.completed,
+                        t.id
+                    );
+                    project.todos.push(todo);
+                });
+                projects.push(project);
+            });
+
+            if( data.activeProject){
+                setActiveProject(data.activeProject);
+            }
+            else if(projects.length > 0){
+                setActiveProject(projects[0].name);
+            }
+            return true;
+        }
+        catch(err){
+            console.warn("Storage Corrupted, clearing", err);
+            localStorage.removeItem(STORAGE_KEY);
+            return false;
+        }
     };
 
     
