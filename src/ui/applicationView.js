@@ -56,16 +56,34 @@ const applicationView = ( () => {
         projects.forEach(project => {
             const item = document.createElement('div');
             item.classList.add('project-item');
-            item.textContent = project.name;
+            // item.textContent = project.name;
 
             if(project === appController.getActiveProject()){
                 item.classList.add('active');
             }
 
-            // Click event to set active project
-            item.addEventListener('click',() => {
+            // left project name
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = project.name;
+            nameSpan.classList.add('project-name');
+
+            // right delete bttn
+            const delBtn = document.createElement('button');
+            delBtn.textContent = "🗑";
+            delBtn.classList.add('project-delete-btn');
+
+            // click project name → set active
+            item.addEventListener('click', () => {
                 appController.setActiveProject(project.name);
             });
+
+            // delete button → delete project
+            delBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                appController.deleteProject(project.name);
+            });
+            item.appendChild(nameSpan);
+            item.appendChild(delBtn);
             projectList.appendChild(item);
         });
         sidebar.appendChild(projectList);

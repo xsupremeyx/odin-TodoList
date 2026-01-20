@@ -197,7 +197,7 @@ footer{
     box-shadow: var(--shadow-sm);
 }
 
-.project-item {
+/* .project-item {
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -212,6 +212,40 @@ footer{
     background: var(--color-tertiary);
     color: var(--color-text-light);
     font-weight: var(--font-weight-medium);
+} */
+
+.project-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.project-item:hover {
+    background: var(--color-bg);
+}
+
+.project-item.active {
+    background: var(--color-tertiary);
+    color: var(--color-text-light);
+}
+
+.project-delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: var(--space-sm);
+}
+
+.project-item {
+    cursor: pointer;
+}
+
+.project-delete-btn {
+    cursor: pointer;
 }
 
 .main-content {
