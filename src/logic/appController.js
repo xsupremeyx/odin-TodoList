@@ -96,6 +96,23 @@ const appController = (() => {
         subscribers.forEach(fn => fn());
     };
 
+    const getSortedTodos = () => {
+        if(!activeProject) return [];
+
+        const priorityRank = { High: 3, Medium: 2, Low: 1 };
+
+        return [...activeProject.todos].sort((a,b)=> {
+            // Sort by priority first
+            const pA = priorityRank[a.priority] || 0;
+            const pB = priorityRank[b.priority] || 0;
+            if(pA !== pB) return pB - pA; // Higher priority first
+            // Then by due date
+            const dA = new Date(a.dueDate);
+            const dB = new Date(b.dueDate);
+            return dA - dB; 
+        });
+    };
+
     
 
     return {
@@ -109,7 +126,8 @@ const appController = (() => {
         toggleTodoCompleted,
         setActiveProject,
         getActiveProject,
-        subscribe
+        subscribe,
+        getSortedTodos
     };
 })();
 
