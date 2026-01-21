@@ -211,6 +211,19 @@ const appController = (() => {
         return true;
     };
 
+    const editTodo = (todoId, data) => {
+        if (!activeProject) return;
+
+        const todo = activeProject.todos.find(t => t.id === todoId);
+        if (!todo) return;
+
+        // shallow merge
+        Object.assign(todo, data);
+
+        subscribers.forEach(fn => fn());
+    };
+
+
 
     
 
@@ -227,7 +240,8 @@ const appController = (() => {
         getActiveProject,
         subscribe,
         getSortedTodos,
-        renameProject
+        renameProject,
+        editTodo
     };
 })();
 

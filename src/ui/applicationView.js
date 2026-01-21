@@ -220,6 +220,15 @@ const applicationView = ( () => {
         details.classList.add('todo-details');
         details.textContent = todo.description || "";
 
+        const editBtn = document.createElement('button');
+        editBtn.textContent = "✎";
+        editBtn.classList.add('todo-edit-btn');
+
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openTodoModal(todo.id); // edit mode
+        });
+
         const delBtn = document.createElement('button');
         delBtn.textContent = "🗑";
         delBtn.classList.add('todo-delete-btn');
@@ -227,6 +236,7 @@ const applicationView = ( () => {
             e.stopPropagation();
             appController.deleteTodo(todo.id);
         });
+        row.appendChild(editBtn);
         row.appendChild(delBtn);
         card.appendChild(row);
         card.appendChild(details);
@@ -240,24 +250,46 @@ const applicationView = ( () => {
         return l;
     };
 
-    const openTodoModal = () => {
+    const openTodoModal = (todoId = null) => {
         modal.innerHTML = '';
+
+        let editing = false;
+        let existing = null;
+
+        if (todoId) {
+            editing = true;
+            const project = appController.getActiveProject();
+            existing = project.todos.find(t => t.id === todoId);
+        }
 
         const form = document.createElement('form');
 
         const titleInput = document.createElement('input');
+        const descInput = document.createElement('textarea');
+        const prioritySelect = document.createElement('select');
+        const dateInput = document.createElement('input');
+        const btnRow = document.createElement('div');
+        const cancelBtn = document.createElement('button');
+        const submitBtn = document.createElement('button');
+
+        if (editing) {
+            titleInput.value = existing.title;
+            descInput.value = existing.description || "";
+            prioritySelect.value = existing.priority.charAt(0).toUpperCase() + existing.priority.slice(1);
+            dateInput.value = existing.dueDate || "";
+        }
+
+
         titleInput.type = 'text';
         titleInput.placeholder = 'Title';
         titleInput.required = true;
         form.appendChild(label("Title"));
         form.appendChild(titleInput);
 
-        const descInput = document.createElement('textarea');
         descInput.placeholder = 'Description';
         form.appendChild(label("Description"));
         form.appendChild(descInput);
 
-        const prioritySelect = document.createElement('select');
         ['High', 'Medium', 'Low'].forEach(p => {
             const opt = document.createElement('option');
             opt.value = p;
@@ -267,19 +299,16 @@ const applicationView = ( () => {
         form.appendChild(label("Priority"));
         form.appendChild(prioritySelect);
 
-        const dateInput = document.createElement('input');
         dateInput.type = 'date';
         form.appendChild(label("Due Date"));
         form.appendChild(dateInput);
 
-        const btnRow = document.createElement('div');
-        const cancelBtn = document.createElement('button');
+        
         cancelBtn.type = 'button';
         cancelBtn.textContent = 'Cancel';
         cancelBtn.addEventListener('click', () => modal.close());
-        const submitBtn = document.createElement('button');
         submitBtn.type = 'submit';
-        submitBtn.textContent = 'Add Todo';
+        submitBtn.textContent = editing ? 'Save' : 'Add';
         btnRow.appendChild(cancelBtn);
         btnRow.appendChild(submitBtn);
         form.appendChild(btnRow);
@@ -288,12 +317,22 @@ const applicationView = ( () => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            appController.addTodo({
-                title: titleInput.value,
-                description: descInput.value,
-                priority: prioritySelect.value,
-                dueDate: dateInput.value
-            });
+            if (!editing) {
+                appController.addTodo({
+                    title: titleInput.value,
+                    description: descInput.value,
+                    priority: prioritySelect.value,
+                    dueDate: dateInput.value
+                });
+            } else {
+                appController.editTodo(todoId, {
+                    title: titleInput.value,
+                    description: descInput.value,
+                    priority: prioritySelect.value,
+                    dueDate: dateInput.value
+                });
+            }
+
             modal.close();
         });
 
