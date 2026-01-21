@@ -3,16 +3,26 @@ import { appController } from '../logic/appController.js';
 const applicationView = ( () => {
     let contentDiv;
     let expandedTodos = new Set();
+    let modal;
 
     const init = (parentDiv) => {
-        appController.subscribe(render);
         contentDiv = parentDiv;
+        createModal();
+        appController.subscribe(render);
         expandedTodos.clear();
         render();
     };
 
+    const createModal = () => {
+        modal = document.createElement('dialog');
+        modal.id = 'app-modal';
+        contentDiv.appendChild(modal);
+        modal.close();
+    };
+
     const render = () => {
-        contentDiv.replaceChildren();
+        const oldPage = contentDiv.querySelector('#application-page');
+        if (oldPage) oldPage.remove();
         const container = document.createElement('div');
         container.id = 'application-page';
 
@@ -109,8 +119,10 @@ const applicationView = ( () => {
             addBtn.classList.add('add-todo-btn');
 
             addBtn.addEventListener('click', () => {
-                addTodoPromptFlow();
+                // addTodoPromptFlow();
+                openTodoModal();
             });
+
             main.appendChild(addBtn);
         }
 
@@ -198,25 +210,74 @@ const applicationView = ( () => {
         card.appendChild(details);
 
         return card;
-    }
+    };
 
-    const addTodoPromptFlow = () => {
-        const title = prompt("Todo title: ");
-        if(!title) return;
+    const label = (text) => {
+        const l = document.createElement('label');
+        l.textContent = text;
+        return l;
+    };
 
-        const priority = prompt("Priority (High, Medium, Low): ", "Medium");
-        if(!priority) return;
+    const openTodoModal = () => {
+        modal.innerHTML = '';
 
-        const dueDate = prompt("Due Date (YYYY-MM-DD):");
-        if(!dueDate) return;
+        const form = document.createElement('form');
 
-        appController.addTodo({
-            title,
-            description: "",
-            dueDate,
-            priority
+        const titleInput = document.createElement('input');
+        titleInput.type = 'text';
+        titleInput.placeholder = 'Title';
+        titleInput.required = true;
+        form.appendChild(label("Title"));
+        form.appendChild(titleInput);
+
+        const descInput = document.createElement('textarea');
+        descInput.placeholder = 'Description';
+        form.appendChild(label("Description"));
+        form.appendChild(descInput);
+
+        const prioritySelect = document.createElement('select');
+        ['High', 'Medium', 'Low'].forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p;
+            opt.textContent = p;
+            prioritySelect.appendChild(opt);
         });
-    }
+        form.appendChild(label("Priority"));
+        form.appendChild(prioritySelect);
+
+        const dateInput = document.createElement('input');
+        dateInput.type = 'date';
+        form.appendChild(label("Due Date"));
+        form.appendChild(dateInput);
+
+        const btnRow = document.createElement('div');
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.addEventListener('click', () => modal.close());
+        const submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.textContent = 'Add Todo';
+        btnRow.appendChild(cancelBtn);
+        btnRow.appendChild(submitBtn);
+        form.appendChild(btnRow);
+
+        // submit handler
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            appController.addTodo({
+                title: titleInput.value,
+                description: descInput.value,
+                priority: prioritySelect.value,
+                dueDate: dateInput.value
+            });
+            modal.close();
+        });
+
+        modal.appendChild(form);
+        modal.showModal();
+    };
 
     return {init, render };
 })();

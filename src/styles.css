@@ -332,3 +332,82 @@ footer{
 .todo-delete-btn:hover {
     opacity: 0.7;
 }
+
+#app-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    background: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    min-width: 350px;
+}
+
+/* Center modal */
+#app-modal::backdrop {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+}
+
+/* Form layout */
+#app-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+/* Inputs */
+#app-modal input,
+#app-modal textarea,
+#app-modal select {
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+}
+
+/* Buttons row */
+#app-modal form div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-sm);
+}
+
+#app-modal button {
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+}
+
+#app-modal button[type="submit"] {
+    background: var(--color-tertiary);
+    color: var(--color-text-light);
+}
+
+#app-modal button[type="button"] {
+    background: var(--color-border);
+    color: var(--color-text-dark);
+}
+
+#app-modal:not([open]) {
+    display: none;
+}
+
+#app-modal textarea {
+    resize: vertical;
+    /* or 'none' if you prefer */
+    min-height: 70px;
+}
+
+#app-modal input,
+#app-modal select,
+#app-modal textarea {
+    width: 100%;
+}
