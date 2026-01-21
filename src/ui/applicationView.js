@@ -1,4 +1,6 @@
 import { appController } from '../logic/appController.js';
+import { format, parseISO } from "date-fns";
+
 
 const applicationView = ( () => {
     let contentDiv;
@@ -44,17 +46,20 @@ const applicationView = ( () => {
         const addBtn = document.createElement('button');
         addBtn.textContent = '+ Add Project';
         addBtn.classList.add('add-project-btn');
+        // addBtn.addEventListener('click', () => {
+        //     const name = prompt("Enter project name: ");
+
+        //     if(!name) return;
+
+        //     const created = appController.createProject(name);
+        //     if(!created){
+        //         alert("project already exists!");
+        //         return;
+        //     }
+        //     appController.setActiveProject(name);
+        // });
         addBtn.addEventListener('click', () => {
-            const name = prompt("Enter project name: ");
-
-            if(!name) return;
-
-            const created = appController.createProject(name);
-            if(!created){
-                alert("project already exists!");
-                return;
-            }
-            appController.setActiveProject(name);
+            openProjectModal();
         });
         sidebar.appendChild(addBtn);
 
@@ -77,6 +82,11 @@ const applicationView = ( () => {
             nameSpan.textContent = project.name;
             nameSpan.classList.add('project-name');
 
+            const renameBtn = document.createElement('button');
+            renameBtn.textContent = "✎";
+            renameBtn.classList.add('project-rename-btn');
+
+
             // right delete bttn
             const delBtn = document.createElement('button');
             delBtn.textContent = "🗑";
@@ -92,7 +102,15 @@ const applicationView = ( () => {
                 e.stopPropagation();
                 appController.deleteProject(project.name);
             });
+
+            // rename button → rename project
+            renameBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // prevent selecting project
+                openProjectModal(project.name); // edit mode
+            });
+
             item.appendChild(nameSpan);
+            item.appendChild(renameBtn);
             item.appendChild(delBtn);
             projectList.appendChild(item);
         });
@@ -158,7 +176,11 @@ const applicationView = ( () => {
 
         const due = document.createElement('span');
         due.classList.add('todo-date');
-        due.textContent = todo.dueDate;
+        if (todo.dueDate) {
+            due.textContent = format(parseISO(todo.dueDate), "d LLL yyyy");
+        } else {
+            due.textContent = "No Date";
+        }
 
         const priority = document.createElement('span');
         priority.classList.add('todo-priority');
@@ -278,6 +300,65 @@ const applicationView = ( () => {
         modal.appendChild(form);
         modal.showModal();
     };
+
+    const openProjectModal = (existingName = null) => {
+        modal.innerHTML = '';
+
+        const form = document.createElement('form');
+
+        const titleInput = document.createElement('input');
+        titleInput.type = 'text';
+        titleInput.placeholder = 'Project name';
+        titleInput.required = true;
+
+        if (existingName) {
+            titleInput.value = existingName;
+        }
+
+        form.appendChild(titleInput);
+
+        const btnRow = document.createElement('div');
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.addEventListener('click', () => modal.close());
+
+        const submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.textContent = existingName ? 'Save' : 'Create';
+
+        btnRow.appendChild(cancelBtn);
+        btnRow.appendChild(submitBtn);
+        form.appendChild(btnRow);
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = titleInput.value.trim();
+            if (!name) return;
+
+            if (existingName) {
+                // rename
+                appController.renameProject(existingName, name);
+                appController.setActiveProject(name);
+            } else {
+                // create new
+                const created = appController.createProject(name);
+                if (!created) {
+                    alert("Project already exists!");
+                    return;
+                }
+                appController.setActiveProject(name);
+            }
+
+            modal.close();
+        });
+
+        modal.appendChild(form);
+        modal.showModal();
+    };
+
 
     return {init, render };
 })();
