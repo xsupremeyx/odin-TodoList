@@ -32,12 +32,12 @@ const navBarController = ( () => {
         if (app) app.remove();
 
         const modal = document.querySelector('#app-modal');
-        if (modal) modal.remove(); // optional — if you want modal to disappear on Home
+        if (modal) modal.remove(); 
         homePageController.init(contentDiv);
     }
 
     const renderApplicationPage = () => {
-        // Placeholder for application page rendering logic
+        
         const home = document.querySelector('#home-page');
         if (home) home.remove();
 

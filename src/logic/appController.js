@@ -107,18 +107,6 @@ const appController = (() => {
     const getSortedTodos = () => {
         if(!activeProject) return [];
 
-        // const priorityRank = { High: 3, Medium: 2, Low: 1 };
-
-        // return [...activeProject.todos].sort((a,b)=> {
-        //     // Sort by priority first
-        //     const pA = priorityRank[a.priority] || 0;
-        //     const pB = priorityRank[b.priority] || 0;
-        //     if(pA !== pB) return pB - pA; // Higher priority first
-        //     // Then by due date
-        //     const dA = new Date(a.dueDate);
-        //     const dB = new Date(b.dueDate);
-        //     return dA - dB; 
-        // });
         const priorityWeight = {
             High: 1,
             Medium: 2,
@@ -126,21 +114,20 @@ const appController = (() => {
         };
         return [...activeProject.todos].sort((a, b) => {
 
-            // 1. Priority first
+            //Priority first
             const pa = priorityWeight[a.priority] || 99;
             const pb = priorityWeight[b.priority] || 99;
             if (pa !== pb) return pa - pb;
 
-            // 2. Then due date
+            //due date
             if (a.dueDate && b.dueDate) {
                 return compareAsc(parseISO(a.dueDate), parseISO(b.dueDate));
             }
 
-            // 3. Handle missing due dates (keep them bottom)
+            // Handle missing due dates (keep them bottom)
             if (!a.dueDate && b.dueDate) return 1;
             if (a.dueDate && !b.dueDate) return -1;
 
-            // 4. Equal
             return 0;
         });
     };
@@ -217,7 +204,6 @@ const appController = (() => {
         const todo = activeProject.todos.find(t => t.id === todoId);
         if (!todo) return;
 
-        // shallow merge
         Object.assign(todo, data);
 
         subscribers.forEach(fn => fn());
