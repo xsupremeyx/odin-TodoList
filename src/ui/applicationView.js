@@ -173,7 +173,7 @@ const applicationView = ( () => {
         const title = document.createElement('span');
         title.classList.add('todo-title');
         title.textContent = todo.title;
-
+    
         const due = document.createElement('span');
         due.classList.add('todo-date');
         if (todo.dueDate) {
@@ -182,8 +182,13 @@ const applicationView = ( () => {
             due.textContent = "No Date";
         }
 
+        if (todo.completed) {
+            card.classList.add('completed');
+        }
+
         const priority = document.createElement('span');
         priority.classList.add('todo-priority');
+        priority.classList.add(`priority-${todo.priority.toLowerCase()}`);
         priority.textContent = todo.priority;
 
         const checkbox = document.createElement('input');
@@ -236,6 +241,13 @@ const applicationView = ( () => {
             e.stopPropagation();
             appController.deleteTodo(todo.id);
         });
+
+
+        if (todo.dueDate && !todo.completed) {
+            const isOverdue = new Date(todo.dueDate) < new Date().setHours(0, 0, 0, 0);
+            if (isOverdue) card.classList.add('overdue');
+        }
+
         row.appendChild(editBtn);
         row.appendChild(delBtn);
         card.appendChild(row);
@@ -279,7 +291,7 @@ const applicationView = ( () => {
             dateInput.value = existing.dueDate || "";
         }
 
-
+        titleInput.focus();
         titleInput.type = 'text';
         titleInput.placeholder = 'Title';
         titleInput.required = true;
@@ -346,6 +358,7 @@ const applicationView = ( () => {
         const form = document.createElement('form');
 
         const titleInput = document.createElement('input');
+        titleInput.focus();
         titleInput.type = 'text';
         titleInput.placeholder = 'Project name';
         titleInput.required = true;

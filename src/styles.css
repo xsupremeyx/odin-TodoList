@@ -270,9 +270,10 @@ footer{
 }
 
 .todo-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(120px, 1fr) auto auto auto auto auto;
+    gap: var(--space-sm);
     align-items: center;
-    justify-content: space-between;
 }
 
 .todo-details {
@@ -288,20 +289,46 @@ footer{
 
 .todo-priority {
     font-size: var(--font-size-sm);
-    padding: 2px 6px;
-    border-radius: var(--radius-sm);
 }
 
-.todo-priority:contains("High") {
-    color: red;
+.todo-priority {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
 }
 
-.todo-priority:contains("Medium") {
-    color: orange;
+.priority-high {
+    background: rgba(244, 67, 54, 0.15);
+    color: #f44336;
 }
 
-.todo-priority:contains("Low") {
-    color: green;
+.priority-medium {
+    background: rgba(255, 152, 0, 0.18);
+    color: #ff9800;
+}
+
+.priority-low {
+    background: rgba(76, 175, 80, 0.18);
+    color: #4caf50;
+}
+
+.todo-card.completed {
+    opacity: 0.55;
+    background: #fafafa;
+}
+
+.todo-card.completed .todo-title {
+    color: #666;
+}
+
+.todo-card.completed .todo-priority {
+    filter: grayscale(0.7);
+}
+
+.todo-card.overdue {
+    border-left: 4px solid #f44336;
 }
 
 .add-project-btn {
@@ -329,8 +356,15 @@ footer{
     font-size: 16px;
 }
 
+.todo-edit-btn,
+.todo-delete-btn {
+    opacity: 0.5;
+    transition: opacity var(--transition-fast);
+}
+
+.todo-edit-btn:hover,
 .todo-delete-btn:hover {
-    opacity: 0.7;
+    opacity: 1;
 }
 
 #app-modal {
